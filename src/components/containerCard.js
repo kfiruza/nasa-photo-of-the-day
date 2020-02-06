@@ -1,32 +1,60 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import PhotoCard from "./photoCard";
+import Photo from "./photo";
+import PhotoTitle from "./photoTitle";
+import PhotoDate from "./photoDate";
+import PhotoDesc from "./photoDesc";
+ import styled from "styled-components";
+
+const APODContainer = styled.div`
+max-width: 1080px;
+margin: 0 auto;
+`;
 
 
 export default function ContainerCard () {
+
+
+
+const leadingZero = num => num < 10 ? '0' + num : num;
+const formatDate = d => {
+    return d.getFullYear() + '-' + leadingZero(d.getMonth()+1) + '-' + leadingZero(d.getDate());
+}
+const changeDate = () => {
+    const year = Math.floor(Math.random() * 29) + 1990;
+    const month = Math.floor(Math.random() * 12) + 1;
+    const day = Math.floor(Math.random() * 28) + 1;
+    fetchData(year + '-' + leadingZero(month) + '-' + leadingZero(day));
+}
+const fetchData = date => {
+    // Stretch goal
+    axios.get("https://api.nasa.gov/planetary/apod?api_key=ckkaDTwirhP0nvKSkYffSraoINRfMizfrzViIDC6&date="+date) 
+    .then(response => {
+    
+    console.log(`Axios.get.then: `, response.data);
+    setPhoto(response.data);
+    })
+
+    .catch(error => {
+    console.log(`Fail, why`, error);
+    });
+}
 const[photo, setPhoto] = useState([]);
 
-useEffect(() => {
-    axios.get("https://api.nasa.gov/planetary/apod?api_key=ietbMUrbmQZsTwOPejf1okcsyd98SN08yynF6Vlw")
-    .then(response => {
-        console.log(response.data);
-        setPhoto(response.data);
-    })
-    .catch(error => {
-        console.log(`Fail, why`, error);
-    });
 
+useEffect(() => {
+const date = formatDate(new Date());
+fetchData(date)
 }, []);
 
-return (
+return  (
 
-        <div className="photo_container">
-        <PhotoCard
-        title = {photo.title}
-        date = {photo.date}
-        src = {photo.hdurl}
-        description = {photo.explanation}
-        />
-        </div>
+    <APODContainer>
+    <Photo url={photo.url} /> 
+    <PhotoTitle title={photo.title} />
+    <PhotoDate date={photo.date} changeDate={changeDate}/>
+     <PhotoDesc description={photo.explanation} />
+    </APODContainer> 
 );
+
 }
