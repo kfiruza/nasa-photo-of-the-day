@@ -27,8 +27,10 @@ const changeDate = () => {
     fetchData(year + '-' + leadingZero(month) + '-' + leadingZero(day));
 }
 const fetchData = date => {
-    // Stretch goal
-    axios.get("https://api.nasa.gov/planetary/apod?api_key=ckkaDTwirhP0nvKSkYffSraoINRfMizfrzViIDC6&date="+date) 
+
+      // Stretch goal
+
+    axios.get("https://api.nasa.gov/planetary/apod?api_key=ckkaDTwirhP0nvKSkYffSraoINRfMizfrzViIDC6&date=" +date) 
     .then(response => {
     
     console.log(`Axios.get.then: `, response.data);
